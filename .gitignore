@@ -1,4 +1,5 @@
 env/
 ParaView-4.4.0-Qt4-Linux-64bit/
+*.pyc
 *.vts
 *.vtr
