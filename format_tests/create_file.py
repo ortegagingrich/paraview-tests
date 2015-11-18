@@ -10,7 +10,7 @@ def export_to_vtk(xgrid, ygrid, zgrid, data_name, data = None):
 	if data == None:
 		data = np.array(zgrid)
 	
-	#stupid reshape data
+	#reshape 2D data into (flat) 3D array
 	oldshape = data.shape
 	newshape = oldshape + (1,)
 	data = data.reshape(newshape)
