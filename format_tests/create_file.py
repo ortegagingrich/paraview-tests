@@ -1,7 +1,7 @@
 """ Create a simple vtk file from a numpy array """
 import numpy as np
 
-TESTING = True
+TESTING = False
 
 def export_to_vtk(xgrid, ygrid, data, data_name):
 	""" Export the specified 2D structured grid to file """
@@ -90,8 +90,8 @@ def __load_topography__(filepath):
 	wavyz = wavy(xgrid, ygrid)
 	
 	
-	for ix in range(0,250):
-		for iy in range(0,400):
+	for ix in range(0,0):
+		for iy in range(0,0):
 			zgrid[iy, ix] = 1e4*wavyz[iy, ix]
 	
 	zgrid = 1e-4 * zgrid
@@ -106,7 +106,7 @@ def __test_main__():
 	import os
 	
 	topo_dir = os.environ['TOPO']
-	topo_file = os.path.join(topo_dir, 'etopo1-131122039053.tt3')
+	topo_file = os.path.join(topo_dir, 'etopo1-164120032062.tt3')
 	(xgrid, ygrid, zgrid) = __load_topography__(topo_file)
 	
 	
