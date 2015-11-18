@@ -3,10 +3,12 @@ import numpy as np
 
 TESTING = False
 
-def export_to_vtk(xgrid, ygrid, data, data_name):
+def export_to_vtk(xgrid, ygrid, zgrid, data_name, data = None):
 	""" Export the specified 2D structured grid to file """
 	from evtk.vtk import VtkFile, VtkStructuredGrid
 	
+	if data == None:
+		data = np.array(zgrid)
 	
 	#stupid reshape data
 	oldshape = data.shape
@@ -14,6 +16,7 @@ def export_to_vtk(xgrid, ygrid, data, data_name):
 	data = data.reshape(newshape)
 	xgrid = xgrid.reshape(newshape)
 	ygrid = ygrid.reshape(newshape)
+	zgrid = zgrid.reshape(newshape)
 	
 	
 	path = './{}'.format(data_name)
@@ -25,7 +28,7 @@ def export_to_vtk(xgrid, ygrid, data, data_name):
 	w.openPiece(start = (0, 0, 0), end = (nx, ny, 0))
 	
 	w.openElement("Points")
-	w.addData("points", (xgrid, ygrid, data))
+	w.addData("points", (xgrid, ygrid, zgrid))
 	w.closeElement("Points")
 	
 	w.openData("Point", scalars = data_name)
@@ -36,7 +39,7 @@ def export_to_vtk(xgrid, ygrid, data, data_name):
 	w.closeGrid()
 	
 	#Now add the actual data?
-	w.appendData((xgrid, ygrid, data))
+	w.appendData((xgrid, ygrid, zgrid))
 	w.appendData(data)
 	
 	#finished
@@ -73,27 +76,6 @@ def __load_topography__(filepath):
 	zgrid = topo.Z
 	
 	#temp; find a better solution (e.g. convert from lat/lon to actual space)
-	#xgrid = 1.e4 * xgrid
-	#ygrid = 1.e4 * ygrid
-	
-	#test only
-	shape = zgrid.shape
-	ny, nx = shape[0], shape[1]
-	#for iy in range(0,ny):
-		#zgrid[iy, 0] = zgrid[iy,0]+1e4
-	#for ix in range(0,nx):
-		#zgrid[1, ix] = zgrid[1,ix]-1e4
-	
-	def wavy(x, y):
-		return np.sin(0.2*np.pi*x)*np.cos(0.4*np.pi*y)
-	
-	wavyz = wavy(xgrid, ygrid)
-	
-	
-	for ix in range(0,0):
-		for iy in range(0,0):
-			zgrid[iy, ix] = 1e4*wavyz[iy, ix]
-	
 	zgrid = 1e-4 * zgrid
 	
 	return (xgrid, ygrid, zgrid)
