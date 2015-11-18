@@ -75,12 +75,17 @@ def __load_topography__(filepath):
 	ygrid = topo.Y
 	zgrid = topo.Z
 	
-	#temp; find a better solution (e.g. convert from lat/lon to actual space)
-	zgrid = 1e-4 * zgrid
-	
 	return (xgrid, ygrid, zgrid)
-		
+
+
+def __load_topography_sphere__(filepath):
+	""" Load in topography, but convert to cartesian coordinates first """
+	from coordinates import latlon_to_cart
 	
+	(lon, lat, elev) = __load_topography__(filepath)
+	(xgrid, ygrid, zgrid) = latlon_to_cart(lon, lat, elev)
+	
+	return (xgrid, ygrid, zgrid, elev)
 
 
 def __test_main__():
@@ -89,8 +94,12 @@ def __test_main__():
 	
 	topo_dir = os.environ['TOPO']
 	topo_file = os.path.join(topo_dir, 'etopo1-164120032062.tt3')
-	(xgrid, ygrid, zgrid) = __load_topography__(topo_file)
 	
+	#(xgrid, ygrid, zgrid) = __load_topography__(topo_file)
+	#temp; find a better solution (e.g. convert from lat/lon to actual space)
+	#zgrid = 1e-4 * zgrid
+	
+	(xgrid, ygrid, zgrid, elev) = __load_topography_sphere__(topo_file)
 	
 	#(xgrid, ygrid, zgrid) = __create_sample_data__(npts = 1000)
 	
@@ -103,7 +112,7 @@ def __test_main__():
 		plt.show()
 	
 	#export to file
-	export_to_vtk(xgrid, ygrid, zgrid, 'topo_grays')
+	export_to_vtk(xgrid, ygrid, zgrid, 'topo_sphere', 1.e3*elev)
 
 
 if __name__ == '__main__':
