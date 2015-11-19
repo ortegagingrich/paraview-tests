@@ -93,13 +93,13 @@ def __test_main__():
 	import os
 	
 	topo_dir = os.environ['TOPO']
-	topo_file = os.path.join(topo_dir, 'etopo1-164120032062.tt3')
+	topo_file = os.path.join(topo_dir, 'chile_topo.tt3')
 	
-	#(xgrid, ygrid, zgrid) = __load_topography__(topo_file)
+	(xgrid, ygrid, zgrid) = __load_topography__(topo_file)
 	#temp; find a better solution (e.g. convert from lat/lon to actual space)
-	#zgrid = 1e-4 * zgrid
+	zgrid = 1e-4 * zgrid
 	
-	(xgrid, ygrid, zgrid, elev) = __load_topography_sphere__(topo_file)
+	#(xgrid, ygrid, zgrid, elev) = __load_topography_sphere__(topo_file)
 	
 	#(xgrid, ygrid, zgrid) = __create_sample_data__(npts = 1000)
 	
@@ -112,7 +112,8 @@ def __test_main__():
 		plt.show()
 	
 	#export to file
-	export_to_vtk(xgrid, ygrid, zgrid, 'topo_sphere', 1.e3*elev)
+	export_to_vtk(xgrid, ygrid, zgrid, 'topo_chile')
+	#export_to_vtk(xgrid, ygrid, zgrid, 'topo_sphere', 1.e3*elev)
 
 
 if __name__ == '__main__':
