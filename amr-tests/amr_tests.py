@@ -23,6 +23,41 @@ class AMRGrid(object):
 		"""
 		pass
 
+class SingleGrid(object):
+	""" Class of rectilinear grid objects """
+	def __init__(self, x_lower, x_upper, y_lower, y_upper, dx, dy,
+	             data_function = None):
+		self.x_lower = x_lower
+		self.x_upper = x_upper
+		self.y_lower = y_lower
+		self.y_upper = y_upper
+		self.nx = round((x_upper - x_lower)/dx) + 1
+		self.ny = round((y_upper - y_lower)/dy) + 1
+		self.data = None
+		
+		if data_function == None:
+			self.data = numpy.zeros([self.nx + 1, self.ny + 1])
+		else:
+			self.fill_data(data_function)
+				
+		
+	
+	
+	def fill_data(self, data_function):
+		""" Fills in the grid by evaluating data_function at every point """
+		(xgrid, ygrid,_) = self.get_grid()
+		self.data = data_function(xgrid, ygrid)
+	
+	
+	def get_grid(self):
+		""" Return a tuple containing meshgrid expansions of the grid """
+		xvec = numpy.linspace(self.x_lower, self.x_upper, self.nx + 1)
+		yvec = numpy.linspace(self.y_lower, self.y_upper, self.ny + 1)
+		
+		(xgrid, ygrid) = numpy.meshgrid(xvec, yvec)
+		
+		return (xgrid, ygrid, self.data)
+
 
 def surface_test(xgrid, ygrid):
 	""" 
@@ -86,6 +121,29 @@ def __test__():
 	plt.show()
 
 
+def __test2__():
+	import matplotlib.pyplot as plt
+	
+	#surface function for test
+	def f(xgrid, ygrid):
+		""" test surface elevation """
+		xfactor = 2*numpy.pi/20
+		yfactor = 2*numpy.pi/11
+		return numpy.sin(xgrid*xfactor) * numpy.cos(ygrid*yfactor)
+	
+	#make a single grid
+	grid1 = SingleGrid(-10, 10, -10, 10, 0.5, 0.5, data_function = f)
+	
+	#plot tests
+	(xgrid1, ygrid1, hgrid1) = grid1.get_grid()
+	
+	print xgrid1
+	
+	plt.figure(1)
+	plt.pcolor(xgrid1, ygrid1, hgrid1)
+	plt.show()
+
+
 if __name__ == '__main__':
-	__test__()
+	__test2__()
 
